@@ -1,0 +1,157 @@
+---
+title: "STS 2300 Activity 03A - Data Scraping and Wrangling"
+author: "REPLACE WITH YOUR NAME"
+date: "Updated: `r Sys.Date()`"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Load required packages here - change options to remove messages
+
+library(dplyr)
+library(rvest) # You may need to install this one first
+```
+
+
+# Scraping Data with `rvest`
+
+Before we get started, you'll need to install the `rvest` package, which includes functions to let us scrape data from websites.
+
+In addition to reading in .csv, Excel, and other data files, you may find yourself wanting to extract data from the web. [Section 6.4 of Modern Data Science with R](https://mdsr-book.github.io/mdsr3e/06-dataII.html#data-intake) includes example code to do this (particularly for Wikipedia pages). If you're interested in the topic, you can find **much** more detailed information in [Chapter 25 of R for Data Science](https://r4ds.hadley.nz/webscraping).
+
+<br>
+
+1. Suppose we want to analyze data on World Cup winners. The Wikipedia page [here](https://en.wikipedia.org/wiki/List_of_FIFA_World_Cup_finals) includes several tables of data. The code below takes the URL, reads the html code for the page, and extracts all the tables it finds. This is stored in an object called `wc_wiki`. Run the code below, then make note of what kind of object was created and anything else you notice.
+
+```{r}
+wc_wiki <- "https://en.wikipedia.org/wiki/List_of_FIFA_World_Cup_finals" |>
+  read_html() |>
+  html_nodes("table")
+```
+
+**Notes about object created:**
+
+<br>
+
+
+2. Using the object above, the code below uses the `pluck()` function to pick a table out of the `wc_wiki` object (Note: You may need to install the `purrr` package). The current code will give us the *first* table on the Wikipedia page. If you examine the new data, you'll see that this isn't likely the table we want. Change the code below until you have the table where each row corresponds with a different year. Write briefly what you had to do.
+
+```{r}
+wc_data <- wc_wiki |>
+  purrr::pluck(1) |>
+  html_table()
+```
+
+**Answer:**
+
+<br>
+
+
+3. Suppose you wanted to know the average attendance at World Cup finals matches. What issue do we run into if we try to find the mean of the Attendance variable?
+
+```{r}
+
+```
+
+
+**Answer:**
+
+<br>
+
+
+4. Let's explore some other functions that might be useful when we work with data. The `str_remove()` function in the `stringr` package can remove things we don't want (like the comma causing us problems in Attendance). Install the `stringr` package (outside of this document), then add code to load `stringr` at the top of this document with the other packages. Run that code.
+
+**No answer: Work goes elsewhere in document**
+
+<br>
+
+
+5. Use the `mutate()` function to do two things: (i) remove the comma from Attendance using `str_detect()`, and (ii) convert Attendance to numeric using `as.numeric()`. I have started the code for you. The `str_detect()` part is saying to look in the Attendance variable and remove any comma that is found. We need to either store the result back in Attendance or in a new variable. You'll need to change the `eval` argument when you're ready to run it.
+
+```{r, eval = FALSE}
+wc_data <- wc_data |>
+  mutate(___ = str_detect(Attendance, ","),
+         ___ = as.numeric(___))
+```
+
+<br>
+
+6. There are a series of `slice_xx()` functions that can be used to find the top or bottom of the data (like `head()` and `tail()`, the highest or lowest values of a variable, or a random sample of the data. Use `slice_max()` to find the years with the 3 highest attendances. You will need to use the `order_by` and `n` arguments. See the help file and/or ask questions if you run into issues. Which location shows up twice in the top 3?
+
+```{r, eval = FALSE}
+slice_max(___, order_by = ___, n = ___)
+```
+
+**Answer:**
+
+<br>
+
+
+7. It's assumed that the home country has an advantage in the World Cup. Let's create a variable to tell us when the home country won. To do this, we are going to use `str_detect()` from `stringr` to find when the winner shows up in the location name. The code below has three blanks. Let's name the new variable `HomeWon`. The first blank in `str_detect()` will be the variable we are looking in, and the second blank will be what we're looking for it to contain.
+
+```{r, eval = FALSE}
+wc_data <- wc_data |>
+  mutate(___ = str_detect(___, ___))
+```
+
+<br>
+
+
+8. Write code to check how many times the home country won the World Cup. (Hint: You could do this with the `table()` function. You could also take advantage of R treating TRUE as a 1 and FALSE as a 0 by using the `sum()` function.)
+
+```{r}
+
+```
+
+**Wins by home country:**
+
+<br>
+
+
+9. In the `Score` column, it says `(a.e.t.)` when a match went into extra time. Use what you've learned above to create a variable saying when matches went into extra time. Then find out how many times this happened.
+
+```{r}
+
+```
+
+**Extra time matches:**
+
+<br>
+
+
+10. Let's take some of the code we've put in different questions and put it all in one piece using the pipe operator (`|>`). Combine questions 2, 5, 7, and 9 so it starts with `wc_wiki` on line one and pipes all the way into a dataset with the variables we reformated and/or created stored in `wc_data`. Practice reading each line of code as you're putting them together with pipes being read as "and then".
+
+```{r}
+
+```
+
+<br>
+
+
+11. Create a new data frame that only includes `Year` and `Winners` for years where the home country won. Use a package like `kableExtra` to format the result.
+
+```{r}
+
+```
+
+<br>
+
+
+**Bonus Challenge (not required but good practice)**
+
+Attempt as many of these steps as you can. Ask questions if you get stuck on one part.
+
+  - Use `select()` to get rid of the `Venue` and `Ref.` columns
+  - Remove extra parts of the `Score` variable by putting `substr(Score, 1, 3)` in a `mutate()` function. This gives us only the first through third characters in that column.
+  - Use a new function called `separate_wider_delim()` to create a separate variable for the winning and losing score. To do this you'll use `delim = "–"` as an argument. You'll also use `names = c("___", "___")` where the blanks are the names for your new columns
+  - Use `mutate()` to convert your two new columns to numeric
+  - Use `mutate()` to create variables for total number of goals (add two new variables) and margin of victor (subtract two new variables)
+  - Find (a) the highest total goals in a game and (b) the games with the lowest margin of victory
+  
