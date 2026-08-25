@@ -65,6 +65,12 @@ hist(sim_values)
 abline(v = 0.4272)
 
 
+# Code Chunk H:
+
+ai_productivity$Change <- ifelse(ai_productivity$Ratio >= 1, 
+                                 ai_productivity$Ratio - 1, 
+                                 ((1 / ai_productivity$Ratio) - 1) * -1)
+
 
 
 # Original Source: https://mikelovesrobots.substack.com/p/wheres-the-shovelware-why-ai-coding
