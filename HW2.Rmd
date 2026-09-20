@@ -1,0 +1,233 @@
+---
+title: "Unit 2 Homework"
+author: "Put Your Name Here"
+date: 'See Canvas for due date'
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<br>
+
+**Directions:** This homework covers material from Unit 2 (Notes 4 - 7). It will be graded as Complete or Incomplete for 3 PER points. To earn a grade of Complete, you will need to:
+
+- make an honest attempt on every question
+- submit your .Rmd file and your knitted .html file through Canvas
+
+<br>
+
+If you don’t know how to answer a question, explain your thought process, what you’ve tried, where you looked for help, etc. If questions are left blank or don’t show a good faith effort, you may not receive a grade of Complete. You are encouraged to avoid or minimize AI use as the goal here is to see what you know and to help you prepare for exams and future work. A little friction and struggle is a key part of learning and internalizing new material.
+
+After the homework due date, I will make solutions available, and you will have a chance to complete a Homework Reflection for an additional 3 PER points. If you have questions, let me know!
+
+---
+
+# Load any libraries you use in this homework here
+
+I have added pacakges everyone will need to load. If you use any others, include them here.
+
+```{r, message = FALSE}
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+library(tidyr) # used for the replace_na() function in question 2
+```
+
+---
+
+# Graphing - European Hedgehogs (Notes 04 & 05)
+
+A [study](https://www.mdpi.com/2076-2615/13/4/626#) looked at lifespans and causes of death of European Hedgehogs, and the authors of the paper appear to have created their graphs using `ggplot2`! You will be recreating each of the three graphs in this image and then putting them together into a single image like the authors did. (Want to see [a picture of these cute little guys](https://en.wikipedia.org/wiki/European_hedgehog#/media/File:Erinaceus_europaeus_LC0119.jpg)?)
+
+```{r, fig.align = 'center', echo = FALSE, fig.cap = 'Article graphs [Viewable online here](https://www.mdpi.com/animals/animals-13-00626/article_deploy/html/images/animals-13-00626-g003.png)'}
+knitr::include_graphics('https://pub.mdpi-res.com/animals/animals-13-00626/article_deploy/html/images/animals-13-00626-g003.png?1676269713')
+```
+
+The code below will read the author's dataset into R, create a variable telling us whether or not a hedgehog was found as roadkill, and remove hedgehogs with missing information about their sex. 
+
+```{r}
+hedgehogs <- read.csv("https://raw.githubusercontent.com/vank-stats/STS2300-Fall2026/refs/heads/main/Data/hedgehogs.csv") |>
+  filter(Sex != "Unknown") |>
+  mutate(TrafficDeath = (Cause == "Roadkill"))
+```
+
+<br>
+
+
+1. Use the data to create **graph B** (bottom left). Pay attention to each of the following when making your graph:
+
+  - Title, axis, and legend labels (the legend name has a space in it, and y-axis label is capitalized)
+  - Graph theme (this is a pre-made theme, not one you need to customize)
+  - Bar color and variable it is associated with (it's ok if your colors aren't exactly the same but make them somewhat close)
+  - Note: You do not need to make the female and male labels all lower case (but are welcome to look into how to do it if you'd like)
+
+```{r}
+
+
+```
+
+
+<br>
+
+
+2. I've written code to summarize the data for you. Use this summarized data to create **graph A**. Pay attention to each of the following when making your graph:
+
+  - Two geoms are used, one that we use for scatterplots plus a new one (`geom_line()`)
+  - Title, axis, and legend labels
+  - Graph theme (same as before)
+  - You will need to adjust which values show up on the x axis (i.e. all 12 months)
+  - You will need to adjust how far the y-axis goes (Hint: use a similar function from your x-axis change but try the `limits` argument)
+  - Note: It's ok if the points on your graph aren't exactly the same or if a different line is plotted on top of the other than on the original graph. This is related to small changes in how the data was processed.
+  
+```{r}
+hedgehog_sum <- hedgehogs |>
+  summarize(count = n(), 
+            .by = c(Month, Sex)) |>
+  add_row(Month = 1:3, 
+          Sex = "Female") |>
+  complete(Month, Sex) |>
+  replace_na(list(count = 0)) |>
+  arrange(Sex, Month)
+```
+
+
+<br>
+
+
+3. Now let's create **graph C**. I've written code that summarizes the data in a slightly different format to allow you to create this graph. Pay attention to each of the following when making your graph:
+
+  - Title and axis labels
+  - Graph theme (same as before)
+  - The legend was removed (Hint: we saw an example of this in Notes 5)
+  - The two graphs are split over the values of the `TrafficDeath` variable
+  - [This page](https://r-graphics.org/recipe-facet-label-text) includes information on how you can change the labels above the two graphs
+  - Note: Like with the previous graph, it's ok if there are small differences in where points are plotted compared to the original graph.
+  
+```{r}
+hedgehog_sum2 <- hedgehogs |>
+  summarize(count = n(), 
+            .by = c(Month, Sex, TrafficDeath)) |>
+  add_row(Month = 1:3, 
+          Sex = "Female", 
+          TrafficDeath = TRUE) |>
+  complete(Month, Sex, TrafficDeath) |>
+  replace_na(list(count = 0)) |>
+  arrange(Sex, Month, TrafficDeath)
+
+
+```
+
+
+<br>
+
+
+4. Lastly, use the `patchwork` library to put all three graphs together like we see in the image above. Congrats, you can make graphs that are used in published scientific research!
+
+```{r}
+
+```
+
+
+
+---
+
+
+# Regression - Amazon Prices (Notes 06 & 07)
+
+In this section, you will use the `amazon_books` data set from the `moderndive` package. I have included code in question 6 to load this dataset without having to load the package.
+
+<br>
+
+5. Suppose we wish to predict the price of books on Amazon using their list price. Which variable is the explanatory variable and which variable is the response variable?
+
+**Explanatory variable:**
+
+**Response variable:**
+
+<br>
+
+
+6. Create a scatterplot for the question above that includes the simple linear regression line on it. Describe the general pattern you see in the data.
+
+```{r}
+books <- moderndive::amazon_books
+
+```
+
+**Description:**
+
+<br>
+
+
+7. Use R to determine the equation for the simple linear regression line. Write the equation in the space below your code.
+
+```{r}
+
+```
+
+**Equation:**
+
+<br>
+
+
+8. Use your line to predict the Amazon price of books with list prices of \$10, \$50, and \$200. Are any of these considered outliers? Why or why not?
+
+```{r}
+
+```
+
+**Answer:**
+
+<br>
+
+
+9. Write a sentence interpreting the slope of your line in context of this example (e.g. using specific variables and appropriate units).
+
+**Answer:**
+
+<br>
+
+
+10. Write a sentence interpreting the y-intercept in context of this example (e.g. using specific variables and appropriate units). If it is not a meaningful interpretation, include that information at the end.
+
+**Answer:**
+
+<br>
+
+11. Let's briefly explore a multiple linear regression. Fit a model that uses `list_price`, `num_pages`, `weight_oz`, and `pub_year` to predict `amazon_price`. Why might we consider removing `num_pages` from our model?
+
+```{r}
+
+```
+
+**Answer:**
+
+<br>
+
+12. If you fit a simple linear regression model using `num_pages` to predict `amazon_price`, the p-value is significant. Why would this be the case even though it wasn't above?
+
+**Answer:**
+
+<br>
+
+13. Fit a model that just includes `list_price`, `weight_oz`, and `pub_year` to predict `amazon_price`. Write a sentence interpreting the `weight_oz` slope in context.
+
+```{r}
+
+```
+
+**Answer:**
+
+<br>
+
+14. Our original simple linear regression had an $R^2$ of 0.9031. The model from the previous question has an $R^2$ of 0.9175. Interpret the second of these two in context. Then write a sentence justifying if you would use this model or the original one.
+
+**Interpretation:**
+
+**Choice with justification:**
+
