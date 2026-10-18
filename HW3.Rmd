@@ -1,0 +1,215 @@
+---
+title: "Unit 3 Homework"
+author: "Put Your Name Here"
+date: 'See Canvas for due date'
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+---
+
+**Directions:** This homework covers material from Unit 3 (Notes 8 - 11). It will be graded as Complete or Incomplete for 3 PER points. To earn a grade of Complete, you will need to:
+
+- make an honest attempt on every question
+- submit your .Rmd file and your knitted .html file through Canvas
+
+<br>
+
+If you don’t know how to answer a question, explain your thought process, what you’ve tried, where you looked for help, etc. If questions are left blank or don’t show a good faith effort, you may not receive a grade of Complete. You are encouraged to avoid or minimize AI use as the goal here is to see what you know and to help you prepare for exams and future work. A little friction and struggle is a key part of learning and internalizing new material.
+
+After the homework due date, I will make solutions available, and you will have a chance to complete a Homework Reflection for an additional 3 PER points. If you have questions, let me know!
+
+---
+
+# Load any libraries you use in this homework here
+
+I have added packages everyone will need to load. If you use any others, include them here.
+
+```{r, message = FALSE}
+library(dplyr)
+library(infer)
+library(readr)
+```
+
+---
+
+# Part 1 - Tree Cover in U.S. Cities
+
+The code below will read in data from a random sample of 100 U.S. Cities. The data is from [this Washington Post article](https://www.washingtonpost.com/climate-environment/interactive/2025/tree-friendly-cities-urban-forests/) about the amount of trees in various cities.
+
+```{r}
+trees <- read_csv("https://raw.githubusercontent.com/vank-stats/STS2300-Fall2026/refs/heads/main/Data/treecover_sample.csv")
+```
+
+<br>
+
+1. Calculate the sample mean tree cover (Note: This is a percentage of area covered by trees).
+
+```{r}
+
+```
+
+$\bar{x}$ =  
+
+<br>
+
+
+2. Use the `infer` package to generate a bootstrap distribution of 1,000 sample means based on this data. Create a histogram of your distribution with your estimate from the previous question added to your graph. Don't forget to set a seed before your bootstrap distribution.
+
+```{r}
+
+```
+
+<br>
+
+
+3. Describe important characteristics of your bootstrap distribution (e.g. shape, center, spread). Include why your estimate from the previous question shows up where it does on your graph.
+
+**Answer:**
+
+<br>
+
+
+4. Generate a 95% confidence interval based on your bootstrap distribution using either the percentile method or the standard error method. Report the interval below using proper notation.
+
+```{r}
+
+```
+
+**95% CI:**
+
+<br>
+
+
+5. Explain how your chosen method creates confidence intervals as applied to this example. (Note: This does not mean to tell me what functions you used. Instead, you should briefly describe the process that creates the interval)
+
+**Explanation:**
+
+<br>
+
+
+6. Write a sentence interpreting your confidence interval in context of this example.
+
+**Interpretation:**
+
+<br>
+
+
+7. Trees provide a variety of benefits to the communities around them. Officials recommend aiming for 40 - 60% tree cover in cities. What can our interval tell us about how the average city is doing in regards to this goal?
+
+**Answer:**
+
+<br>
+
+
+8. Suppose you shared your interval with conservation officials who decided the confidence interval was too wide for them to effectively reach conclusions. What are two things they could do to reduce the width of your confidence interval? For each option, what is a downside to using this option to reduce the CI width?
+
+**Option 1 (include downside):**
+
+**Option 2 (include downside):**
+
+<br>
+
+
+9. Calculate a **99%** confidence interval for this example using a theory-based method.
+
+```{r}
+
+```
+
+**99% CI:**
+
+<br>
+
+---
+
+
+# Part 2 - Data Center Construction
+
+An [August 2026 Elon Poll survey](https://www.elon.edu/u/elon-poll/) asked about opinions on data center construction. The specific question was
+
+> Data centers are typically large buildings that contain computers and their infrastructure. If a large data center were proposed to be built in your local community, would you support or oppose its construction?
+
+We are going to explore differing opinions by Democrat and Republican respondents.
+
+```{r}
+data_centers <- data.frame(party = c(rep("Democrat", 243),
+                                     rep("Republican", 241)),
+                           opinion = c(rep("Support", 53), rep("Oppose", 190),
+                                       rep("Support", 80), rep("Oppose", 161)))
+```
+
+<br>
+
+
+10. Calculate an estimate for the difference in proportion of support between the two parties.
+
+```{r}
+
+```
+
+$\hat{p_1} - \hat{p_2}$:
+
+<br>
+
+
+11. Generate a bootstrap resampling distribution of 1,000 sample differences in proportions. Make a histogram of these values. Describe what this specific graph shows (include things like center, spread, and shape).
+
+```{r}
+
+```
+
+**Description:**
+
+<br>
+
+
+12. Calculate a **90%** confidence interval for a difference in proportions. Use the opposite method that you used in Part 1 (e.g. if you used percentile method there, use standard error method here, and vice versa). Report the interval below.
+
+```{r}
+
+```
+
+**90% Confidence interval:**
+
+<br>
+
+
+13. Write a sentence interpreting your confidence interval in context of this example. Be sure to keep in mind which party is group 1 and which is group 2 when writing your interpretation.
+
+**Interpretation:**
+
+<br>
+
+
+14. Calculate a **90%** confidence interval for this example using a theory-based method.
+
+```{r}
+
+```
+
+**90% CI:**
+
+<br>
+
+15. Do we have reason to believe there is differing support of data centers between people from these two parties in all of North Carolina? Why or why not?
+
+**Answer:**
+
+<br>
+
+---
+
+# Part 3 - Short Answer
+
+16. Explain the difference between a bootstrap distribution and a sampling distribution. Which quantity should be at the center of each and why?
+
+**Answer:**
+
+<br>
