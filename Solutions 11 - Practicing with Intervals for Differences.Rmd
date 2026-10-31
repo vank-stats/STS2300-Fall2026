@@ -1,0 +1,220 @@
+---
+title: "STS 2300 Activity 11 - Practicing with Intervals for Differences"
+author: "Solutions"
+date: "Updated: `r Sys.Date()`"
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Below are the packages you will need for this activity. If you use other packages, you can add them here.
+
+```{r, message = FALSE}
+library(ggplot2)
+library(infer)
+library(dplyr)
+```
+
+---
+
+**NOTE: IN THIS EXAMPLE, I HAD AN INCORRECT EXPLANATION OF THE ATTENTION SCORE VARIABLE THAT A COUPLE OF YOU FOUND WHEN LOOKING AT THE LINKED ARTICLE / PAPER.THE DESCRIPTIONS BELOW ARE BASED ON THE ORIGINAL WORDING SINCE THAT'S WHAT MOST PEOPLE WENT OFF OF. THANK YOU THOUGH TO THE FOLKS WHO FOUND THE ERROR SO THAT I CAN GET IT FIXED IN THE FUTURE. I'VE USED THIS EXAMPLE IN MULTIPLE CLASSES WITHOUT ANYONE IDENTIFYING THAT BEFORE.**
+
+# Part 1 - Fidget spinners and attention
+
+A study looked at the effect that fidget spinners have on attention and memory. You can read an article about it [here](https://www.psypost.org/2019/11/study-finds-using-a-fidget-spinner-can-impair-memory-and-attention-54904) or look at the research paper [here](https://onlinelibrary.wiley.com/doi/full/10.1002/acp.3610) if you're interested.
+
+The researchers wanted to know how attention might differ between people using and not using a fidget spinner. The code below will read data from the study directly into R and subset the data to remove a control group where no fidget spinner was used. This leaves us with two groups in the `Condition` variable: "Spinner" (actively using a fidget spinner) and "Spinner Present" (near someone who was using a fidget spinner).
+
+```{r}
+fidget <- read.csv("https://raw.githubusercontent.com/vank-stats/STS2300-Fall2026/refs/heads/main/Data/fidget_spinners.csv") |>
+  filter(Condition != "No Spinner")
+```
+
+<br>
+
+
+1. Create a graph that can be used to explore how `AttentionScore` differs between people using a fidget spinner and people near someone using a fidget spinner. Describe what the graph shows about the distribution of `AttentionScore` between these two groups.
+
+```{r}
+ggplot(fidget, aes(x = AttentionScore, y = Condition)) +
+  geom_boxplot()
+```
+
+**Graph description:** The Spinner group tends to have slightly higher values for AttentionScore, but there is a lot of overlap between the two. The middle 50% of the Spinner Present group has values from around 2.4 to 3.6 compared to values from 3 to 4 for the Spinner group.
+
+<br>
+
+
+2. Calculate a difference in sample mean attention scores between the two groups. Use "Spinner" - "Spinner Present" as the order of subtraction. Write a sentence about what the value you get means in context of this example. Additionally, write out a sentence describing the corresponding parameter of interest.
+
+```{r}
+fidget |>
+  specify(AttentionScore ~ Condition) |>
+  calculate(stat = "diff in means", order = c("Spinner", "Spinner Present"))
+```
+
+**Sentence about difference in sample means:** The sample mean Attention Score is 0.4 points higher for the people with the spinner than it is for those near one.
+
+**Parameter of interest:** Population mean Attention Score for those with a fidget spinner minus the population mean Attention Score for those near a fidget spinner.
+
+<br>
+
+
+3. Generate a bootstrap distribution to better understand sampling variability in your estimate. Make a histogram of this distribution and comment on what you see. (Note: The `set.seed()` line will ensure we get the same result each time we knit our document. You should replace the number with a number of your choosing.)
+
+```{r}
+set.seed(92520)
+fidget_boot <- fidget |>
+  specify(AttentionScore ~ Condition) |>
+  generate(type = "bootstrap", reps = 1000) |>
+  calculate(stat = "diff in means", order = c("Spinner", "Spinner Present"))
+
+visualize(fidget_boot)
+```
+
+**Description of bootstrap:** The distribution is pretty normal / bell-shaped and is centered around 0.4 (the difference in sample means). There are only a small number of differences below 0 and the highest ones are almost to 1.
+
+<br>
+
+
+4. Calculate a confidence interval for the difference in population means that uses your bootstrap distribution. Write your interval below. (Note: I didn't specify a confidence level, so you can choose one)
+
+```{r}
+fidget_boot |>
+  get_ci(type = "percentile")
+```
+
+**CI:** (0.032, 0.753)
+
+<br>
+
+
+5. Provide an interpretation of your confidence interval in context of this example. Additionally, consider whether it seem like fidget spinners help (or hurt) memory (**typo that should be attention**) on average?
+
+**Interpretation:** We are 95% confident that the population mean Attention Score is between 0.03 and 0.75 points higher for people with the fidget spinner than it is for people with a fidget spinner nearby. In the original context of the activity, this suggests people with the fidget spinner have better attention than those with one nearby. However, the score actual represents how long their attention lapses, so those that found my mistake correctly noted that the people with the spinner had worse attention.
+
+<br>
+
+
+6. Based on your results, what takeaways can we make (or not make) about the impact of fidget spinners on attention?
+
+**Answer:** See the end of question 5 where I added two possible takeaways.
+
+<br>
+
+
+7. For practice, make a theory-based confidence interval for this example as well.
+
+```{r}
+t.test(AttentionScore ~ Condition, data = fidget)$conf.int
+```
+
+**CI:** (0.016, 0.792)
+
+<br>
+
+
+8. How broadly do you think these conclusions (from your CI) might apply? Consider who makes up the sample and whether you think it's likely this was a random sample.
+
+**Answer:** This was not a random sample. Students at a particular college were recruited and given some class credit for participating. While there may be some general trends here for college students, it is unlikely that this group is a good representation of all people, and the experiment should be completed in other contexts if we want to apply the results broadly.
+
+<br>
+
+
+---
+
+
+# Part 2 - Airbnb Discrimination
+
+The code below will read a data frame into R from a study on potential discrimination by Airbnb hosts. In the experiment, researchers sent requests to Airbnb hosts asking to stay at their properties. The only difference on each request was the name that was used. Researchers chose names that were predominantly associated with certain genders and races (determined in a separate study) and randomly assigned a name to each request. They then recorded whether or not the host gave a positive response indicating the person could stay there. 
+
+Our goal will be to determine the difference in proportion of positive responses given by hosts who received a request from a predominantly Black name versus a predominantly white name.
+
+```{r}
+airbnb <- read.csv("https://raw.githubusercontent.com/vank-stats/STS2300-Fall2026/refs/heads/main/Data/airbnb.csv")
+```
+
+<br>
+
+
+9. Make a bar graph (using `geom_bar()`) to compare the proportion of positive responses between the two races used in this study. Briefly describe what the graph shows about our sample. (Note: You want your variable that creates groups (`Race`) to go on the x-axis and your variable of interest (`Response`) to map to fill. Use the `position = "fill"` argument inside `geom_bar()` to get a graph comparing proportions.)
+
+```{r}
+ggplot(airbnb, aes(x = Race, fill = Response)) +
+  geom_bar(position = "fill")
+```
+
+**Description of graph:** The bar graph shows that the proportion of positive responses is a bit higher when hosts receive applications from a predominantly Black name.
+
+<br>
+
+
+10. What is the parameter of interest for this example? Write it out in words below.
+
+**Parameter of interest:** The population proportion of positive responses from hosts when there is a predominantly white name on the application minus the proportion of positive responses when there is a predominantly Black name on the application
+
+<br>
+
+
+11. We can calculate point estimates by writing code for a bootstrap distribution but leaving out the `generate()` argument (i.e. only using `specify()` and `calculate()`). Calculate a difference in sample proportions in this way and explain what the value you get means in this context.
+
+```{r}
+airbnb_stat <- airbnb |>
+  specify(Response ~ Race, success = "Positive") |>
+  calculate(stat = "diff in props", order = c("White", "Black"))
+airbnb_stat
+```
+
+**Answer:** The statistic calculated was 0.085. This tells us that in the sample, hosts were 8.5 percentage points more likely to give a positive response if the application came from a predominantly white name.
+
+<br>
+
+
+12. Write code to generate a bootstrap distribution. You can reuse your code from the previous question and add in a `generate()` line between `specify()` and `calculate()`. Describe what your bootstrap distribution shows. (Note: Remember to set a seed)
+
+```{r}
+set.seed(112300)
+
+airbnb_boot <- airbnb |>
+  specify(Response ~ Race, success = "Positive") |>
+  generate(type = "bootstrap", reps = 1000) |>
+  calculate(stat = "diff in props", order = c("White", "Black"))
+
+visualize(airbnb_boot)
+```
+
+**Description:** The distribution is roughly bell-shaped and centered just above 0.08 (where our statistic was). The values are all positive and range from around 0.05 to 0.12.
+
+<br>
+
+
+13. Generate a 95% confidence interval using your bootstrap distribution.
+
+```{r}
+airbnb_boot |>
+  get_ci(type = "se", point_estimate = airbnb_stat)
+```
+
+**95% CI:** (0.062, 0.108)
+
+<br>
+
+
+14. Interpret your interval in context of this example. Your sentence should be understandable by someone reading a news story about this experiment. (Note: When talking about a difference in percentages, you will use the phrase "percentage points")
+
+**Interpretation:** We are 95% confident that Airbnb hosts will give a positive response between 6.2 and 10.8 percentage points more often when the application has a predominantly white name than they will when it has a predominantly Black name.
+
+<br>
+
+
+15. As practice, calculate a 95% theory-based interval based on this data.
+
+```{r}
+table(airbnb$Response, airbnb$Race)
+prop.test(x = c(1498, 1210), n = c(1498 + 1661, 1210 + 1900))
+```
+
+**95% CI:** (0.060, 0.110)
