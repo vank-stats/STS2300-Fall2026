@@ -1,0 +1,176 @@
+---
+title: "STS 2300 Task 3: Hypothesis Test Version"
+author: "Put Your Name(s) Here"
+date: 'See Canvas for due date'
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+---
+
+**Directions:** Use this .Rmd template to complete the project Task 3.
+
+Add any packages that you use here. I've loaded ones I anticipate you will need.
+
+```{r, message = FALSE}
+library(dplyr)
+library(infer)
+library(ggplot2)
+```
+
+---
+
+# Section 1: Introduction
+
+<br>
+
+1. What is your primary question of interest for the project?
+
+**Question of interest:**
+
+<br>
+
+2. Read your data into R and subset it to the sample you will be using. Describe the sample as specifically as possible (e.g. 752 18 - 22 year olds currently enrolled in school).
+
+```{r}
+
+```
+
+**Sample description:**
+
+<br>
+
+3. Briefly summarize each of the variables that will be part of your analysis. For categorical variables, give counts/proportions of the categories. For quantitative variables, describe the center spread. For each, make note of any notable characteristics of the variable(s). You can display R output for these things but you should also comment on that output.
+
+```{r}
+
+```
+
+**Variable descriptions:**
+
+<br>
+
+---
+
+# Section 2: Hypothesis Test
+
+<br>
+
+4. Make an appropriate graph visualizing your parameter of interest. Describe what the graph shows about your sample in relation to your question of interest. (Note: If your parameter includes two variables, those will both be part of your graph. Think about what we've done for questions about differences in proportions or means as a guide.)
+
+```{r}
+
+```
+
+**Description of graph:**
+
+<br>
+
+5. State your hypotheses and define any parameters in context of your example. Use appropriate symbols and/or terminology.
+
+$H_0:$
+
+$H_a:$
+
+**Parameter definition:**
+
+<br>
+
+6. Calculate a relevant statistic to estimate your parameter of interest. (Remember you can use the `infer` package to do this)
+
+```{r}
+
+```
+
+**Esimate of parameter:**
+
+<br>
+
+7. Generate a null distribution and display it with the p-value shaded. Comment on what it shows.
+
+```{r}
+
+```
+
+**Description of graph:**
+
+<br>
+
+8. Calculate the p-value for your test. Write a sentence interpreting it in context. (Note: This is not the conclusion of your test. That will come next.)
+
+```{r}
+
+```
+
+**Interpretation of p-value:**
+
+<br>
+
+9. Provide a formal conclusion for your hypothesis test. Remember to include all of the parts we said need to go into a conclusion for this class.
+
+**Hypothesis test conclusion:**
+
+<br>
+
+---
+
+# Section 3: Confidence interval
+
+<br>
+
+10. Use the `infer` package to generate a bootstrap distribution for your parameter of interest. Graph the distribution and comment on it's center, shape, and spread. Address why the center makes sense in this context.
+
+```{r}
+
+```
+
+**Description of bootstrap:**
+
+<br>
+
+11. Use your bootstrap distribution to create a confidence interval. Describe how the method you used (either SE or percentile) creates the interval. Then write a sentence interpreting the interval in context.
+
+```{r}
+
+```
+
+**Description of CI method:**
+
+**Interpretation of interval:**
+
+<br>
+
+---
+
+# Section 4: Conclusions
+
+<br>
+
+12. What are the main takeaways from your results? Be sure to address these in context of your original question of interest.
+
+**Takeaways:**
+
+<br>
+
+13. What limitations should someone keep in mind in regards to your analysis?
+
+**Limitations:**
+
+<br>
+
+14. What future study could be built upon or inspired by your work here? For example, what might you do with more time, data, methods, etc.?
+
+**Future study:**
+
+<br>
+
+15. Is there anything else you'd like to add related to your project that I didn't think to include?
+
+**Optional answer:**
+
